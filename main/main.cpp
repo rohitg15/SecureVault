@@ -3,7 +3,7 @@
 #include <string.h>
 #include "FileChunkReader.h"
 #include "FileChunkWriter.h"
-#include "HmacSha256.h"
+#include "HmacProvider.h"
 
 
 
@@ -24,8 +24,9 @@ int main(int argc, char **argv)
     size_t hmacKeyLen = 32;
     std::vector<unsigned char> hmacKey(hmacKeyLen + 1, 0x01);
     hmacKey[hmacKeyLen] = 0x0;
-    MacProvider::Ptr pHmac = std::make_unique<HmacSha256>();
-    pHmac->InitMac(hmacKey, hmacKeyLen);
+    MacProvider::Ptr pHmac = std::make_unique<HmacProvider>();
+    MacAlgorithm alg(CryptoAlgorithm::MacType::HMAC_SHA_256);
+    pHmac->InitMac(hmacKey, alg);
     
     std::vector<unsigned char> chunkVec(chunkSize + 1, 0);
     while ( !inFilePtr->IsEof() ) {

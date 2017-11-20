@@ -1,10 +1,11 @@
-#ifndef _USERS_MORPHEUS_DOCUMENTS_PROGRAMS_CPP_SECUREVAULT_INCLUDE_MACPROVIDER_H_
-#define _USERS_MORPHEUS_DOCUMENTS_PROGRAMS_CPP_SECUREVAULT_INCLUDE_MACPROVIDER_H_
+#ifndef _LIBSECURITY_MACPROVIDER_H_
+#define _LIBSECURITY_MACPROVIDER_H_
 
 
 #include <memory>
 #include <vector>
 #include "Global.h"
+#include "MacAlgorithm.h"
 
 class MacProvider {
  public:
@@ -16,7 +17,7 @@ class MacProvider {
     void
     InitMac(
         const std::vector<unsigned char>& key,
-        uint32_t keyLenBytes
+        const MacAlgorithm& alg
         ) = 0;
 
     virtual
@@ -38,4 +39,4 @@ class MacProvider {
         ) = 0;
 };
 
-#endif  // _USERS_MORPHEUS_DOCUMENTS_PROGRAMS_CPP_SECUREVAULT_INCLUDE_MACPROVIDER_H_
+#endif  // _LIBSECURITY_MACPROVIDER_H_

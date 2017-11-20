@@ -1,5 +1,5 @@
-#ifndef _USERS_MORPHEUS_DOCUMENTS_PROGRAMS_CPP_SECUREVAULT_INCLUDE_ENCRYPTIONPROVIDER_H_
-#define _USERS_MORPHEUS_DOCUMENTS_PROGRAMS_CPP_SECUREVAULT_INCLUDE_ENCRYPTIONPROVIDER_H_
+#ifndef _LIBSECURITY_ENCRYPTIONPROVIDER_H_
+#define _LIBSECURITY_ENCRYPTIONPROVIDER_H_
 
 #include <memory>
 #include <vector>
@@ -11,4 +11,4 @@ class EncryptionProvider {
     virtual std::vector<unsigned char> decrypt(const std::vector<unsigned char>& ciphertext, const std::vector<unsigned char>& iv) = 0;
 };
 
-#endif  // _USERS_MORPHEUS_DOCUMENTS_PROGRAMS_CPP_SECUREVAULT_INCLUDE_ENCRYPTIONPROVIDER_H_
+#endif  // _LIBSECURITY_ENCRYPTIONPROVIDER_H_

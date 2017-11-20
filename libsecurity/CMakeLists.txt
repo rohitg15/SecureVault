@@ -1,9 +1,11 @@
 set(libsecurity_SRCS
     Global.h
     MacProvider.h
-    HmacSha256.h
-    HmacSha256.cpp
+    HmacProvider.h
     EncryptionProvider.h
+    MacAlgorithm.h
+    HmacProvider.cpp
+    MacAlgorithm.cpp
 )
 
 

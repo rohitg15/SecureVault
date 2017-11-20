@@ -1,23 +1,25 @@
-#include "HmacSha256.h"
+#include "HmacProvider.h"
 #include "VaultException.h"
 #include <iostream>
 #include <string.h>
 #include <sstream>
 
-HmacSha256::HmacSha256()
+HmacProvider::HmacProvider()
 : m_hashLenBytes(0) {}
 
 void
-HmacSha256::InitMac(
+HmacProvider::InitMac(
     const std::vector<unsigned char>& key,
-    uint32_t keyLen = 0
+    const MacAlgorithm& alg
     )
 {
-    //std::cout << "hmac key strlen : " << strlen((const char*)key) << std::endl;
-    if (keyLen != HmacSha256::HMAC_SHA256_KEY_LEN_BYTES)
+    uint32_t keyLen = key.size();
+    if ( keyLen != (alg.GetKeySize() >> 3) + 1) /* adding 1 for NULL byte */
     {
-        /* Log error message in logfile and exit */
-    
+        std::stringstream ss;
+        ss << "Error in InitMac, invalid key size. Expected key of size " << (alg.GetKeySize() >> 3) 
+           << " bytes, got " << keyLen << " bytes";
+        throw VaultException("HmacProvider.cpp", "Cryptographic Exception", ss.str().c_str());
     }
     m_hashLenBytes = keyLen;
     HMAC_CTX_init(&m_ctx);
@@ -25,12 +27,12 @@ HmacSha256::InitMac(
     {
         std::stringstream ss;
         ss << "error in HMAC_Init_ex, key size = " << keyLen << std::endl; 
-        throw VaultException("HmacSha256.cpp", "Cryptographic Exception", ss.str().c_str());
+        throw VaultException("HmacProvider.cpp", "Cryptographic Exception", ss.str().c_str());
     }
 }
 
 void
-HmacSha256::UpdateMac(
+HmacProvider::UpdateMac(
     const std::vector<unsigned char>&  payload,
     uint32_t payloadSize
     )
@@ -38,21 +40,21 @@ HmacSha256::UpdateMac(
     if ( !HMAC_Update(&m_ctx, payload.data(), payloadSize) )
     {
         std::stringstream ss;
-        ss  << "error in HmacSha256::UpdateMac Hmac_Update, payload size = " << payloadSize;
-        throw VaultException("HmacSha256.cpp", "Cryptographic Exception", ss.str().c_str());
+        ss  << "error in HmacProvider::UpdateMac Hmac_Update, payload size = " << payloadSize;
+        throw VaultException("HmacProvider.cpp", "Cryptographic Exception", ss.str().c_str());
     }
 }
 
 std::vector<unsigned char>
-HmacSha256::GetFinalMac()
+HmacProvider::GetFinalMac()
 {
     std::unique_ptr<unsigned char[]> result = std::make_unique<unsigned char[]>(m_hashLenBytes);
     if ( !HMAC_Final(&m_ctx, result.get(), &m_hashLenBytes) )
     {
         /* Is unique_ptr Exception safe? Double Check!!! */
         std::stringstream ss;
-        ss << "error in HmacSha256::UpdateMac Hmac_Final, hash size in bytes = " << m_hashLenBytes;
-        throw VaultException("HmacSha256.cpp", "Cryptographic Exception", ss.str().c_str());
+        ss << "error in HmacProvider::UpdateMac Hmac_Final, hash size in bytes = " << m_hashLenBytes;
+        throw VaultException("HmacProvider.cpp", "Cryptographic Exception", ss.str().c_str());
     }
     std::vector<unsigned char> hashVec;
     for(int i = 0; i < m_hashLenBytes; ++i)
@@ -63,7 +65,7 @@ HmacSha256::GetFinalMac()
 }
 
 bool
-HmacSha256::VerifyMac(
+HmacProvider::VerifyMac(
     const std::vector<unsigned char>& expMac,
     const std::vector<unsigned char>& realMac
     )
@@ -82,7 +84,7 @@ HmacSha256::VerifyMac(
     return (result == 0);
 }
 
-HmacSha256::~HmacSha256()
+HmacProvider::~HmacProvider()
 {
     HMAC_CTX_cleanup(&m_ctx);
 }

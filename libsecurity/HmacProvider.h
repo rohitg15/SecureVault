@@ -1,36 +1,36 @@
-#ifndef _USERS_MORPHEUS_DOCUMENTS_PROGRAMS_CPP_SECUREVAULT_INCLUDE_HMACSHA256_H_
-#define _USERS_MORPHEUS_DOCUMENTS_PROGRAMS_CPP_SECUREVAULT_INCLUDE_HMACSHA256_H_
+#ifndef _LIBSECURITY_HMACPROVIDER_H_
+#define _LIBSECURITY_HMACPROVIDER_H_
 
 #include "MacProvider.h"
 #include <vector>
 #include <openssl/hmac.h>
 
-class HmacSha256 : public MacProvider {
+class HmacProvider : public MacProvider {
  public:
-    HmacSha256();
-    ~HmacSha256();
+    HmacProvider();
+    ~HmacProvider();
     
     void
     InitMac(
         const std::vector<unsigned char>& key,
-        uint32_t keyLenBytes
-        );
+        const MacAlgorithm& alg
+        ) override;
 
     void
     UpdateMac(
         const std::vector<unsigned char>& payload,
         uint32_t payloadLen
-        );
+        ) override;
 
     std::vector<unsigned char>
-    GetFinalMac();
+    GetFinalMac() override;
 
     virtual
     bool
     VerifyMac(
         const std::vector<unsigned char>& expMac,
         const std::vector<unsigned char>& realMac
-    );
+    ) override;
     
  private:
     static const uint32_t HMAC_SHA256_KEY_LEN_BYTES = 32;
@@ -38,5 +38,5 @@ class HmacSha256 : public MacProvider {
     uint32_t m_hashLenBytes;
 };
 
-#endif  // _USERS_MORPHEUS_DOCUMENTS_PROGRAMS_CPP_SECUREVAULT_INCLUDE_HMACSHA256_H_
+#endif  // _LIBSECURITY_HMACPROVIDER_H_
 
