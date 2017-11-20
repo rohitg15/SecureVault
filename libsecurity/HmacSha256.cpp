@@ -68,8 +68,9 @@ HmacSha256::VerifyMac(
     const std::vector<unsigned char>& realMac
     )
 {
-    uint8_t result = 0;
+
     std::vector<unsigned char>::const_iterator eIt = expMac.begin(), rIt = realMac.begin();
+    uint32_t result = (expMac.size() ^ realMac.size());
 
     /* No early exit comparisons, to prevent side-channels */
     while(eIt != expMac.end() && rIt != realMac.end()) 
