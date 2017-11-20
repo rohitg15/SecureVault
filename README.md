@@ -1,4 +1,5 @@
-A sample project illustrating how to perform unit testing with GoogleTest and CMake
+SecureVault is a tool that helps protect and store secrets of any size. It may also be used to protect arbitrary files of the user's choice.
+
 
 ##Building
 
@@ -20,5 +21,3 @@ or
 ~~~
 build/test/testfoo/testfoo
 ~~~
-
-Refer to [this blog post](http://kaizou.org/2014/11/gtest-cmake/) for a detailed explaination of how it works.
