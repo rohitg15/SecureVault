@@ -15,7 +15,6 @@ int main(int argc, char **argv)
         return -1;
     }
 
-
     FileChunkReader::Ptr inFilePtr = std::make_unique<FileChunkReader>(argv[1]);
     FileChunkWriter::Ptr outFilePtr = FileChunkWriter::GetInstance(argv[2]);
     size_t chunkSize = 64;
@@ -24,8 +23,8 @@ int main(int argc, char **argv)
     size_t hmacKeyLen = 32;
     std::vector<unsigned char> hmacKey(hmacKeyLen + 1, 0x01);
     hmacKey[hmacKeyLen] = 0x0;
-    MacProvider::Ptr pHmac = std::make_unique<HmacProvider>();
-    MacAlgorithm alg(CryptoAlgorithm::MacType::HMAC_SHA_256);
+    svsecurity::MacProvider::Ptr pHmac = std::make_unique<svsecurity::HmacProvider>();
+    svsecurity::MacAlgorithm alg(svsecurity::Algorithm::MacType::HMAC_SHA_256);
     pHmac->InitMac(hmacKey, alg);
     
     std::vector<unsigned char> chunkVec(chunkSize + 1, 0);
