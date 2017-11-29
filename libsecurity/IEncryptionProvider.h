@@ -22,7 +22,7 @@ namespace svsecurity
         ) = 0;
 
         virtual
-        void
+        std::vector<unsigned char>
         UpdateEncryptor(
             const std::vector<unsigned char>& payload, /* Expected to have extra NULL byte */
             uint32_t payloadLen

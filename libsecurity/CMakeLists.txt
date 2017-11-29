@@ -3,10 +3,10 @@ set(libsecurity_SRCS
     HmacProvider.h
     IEncryptionProvider.h
     CryptoAlgorithms.h
-    AesProvider.h
+    EncryptionProvider.h
     HmacProvider.cpp
     CryptoAlgorithms.cpp
-    AesProvider.cpp
+    EncryptionProvider.cpp
 )
 
 

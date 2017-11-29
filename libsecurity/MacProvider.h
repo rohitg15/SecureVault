@@ -4,7 +4,6 @@
 
 #include <memory>
 #include <vector>
-#include "Global.h"
 #include "CryptoAlgorithms.h"
 
 namespace svsecurity

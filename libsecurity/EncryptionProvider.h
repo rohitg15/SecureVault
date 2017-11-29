@@ -3,13 +3,13 @@
 
 namespace svsecurity
 {    
-    class AesProvider : IEncryptionProvider
+    class EncryptionProvider : IEncryptionProvider
     {
     public:
-        AesProvider(
+        explicit EncryptionProvider(
             const EncryptionAlgorithm& alg
         );
-        ~AesProvider();
+        ~EncryptionProvider();
 
         void
         InitEncryptor(
@@ -17,7 +17,7 @@ namespace svsecurity
             const std::vector<unsigned char>& iv
         ) override;
 
-        void
+        std::vector<unsigned char>
         UpdateEncryptor(
             const std::vector<unsigned char>& payload,
             uint32_t payloadSize
