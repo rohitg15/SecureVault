@@ -25,7 +25,8 @@ int main(int argc, char **argv)
     hmacKey[hmacKeyLen] = 0x0;
     svsecurity::MacProvider::Ptr pHmac = std::make_unique<svsecurity::HmacProvider>();
     svsecurity::MacAlgorithm alg(svsecurity::Algorithm::MacType::HMAC_SHA_256);
-    pHmac->InitMac(hmacKey, alg);
+    pHmac->InitMac(hmacKey, alg);        
+
     
     std::vector<unsigned char> chunkVec(chunkSize + 1, 0);
     while ( !inFilePtr->IsEof() ) {
@@ -38,10 +39,10 @@ int main(int argc, char **argv)
     }
     
     std::vector<unsigned char> mac = pHmac->GetFinalMac();
-    for(unsigned char c : mac)
-    {
-        printf("%02x", c);
-    }
+    // for(unsigned char c : mac)
+    // {
+    //     printf("%02x", c);
+    // }
     std::cout << std::endl;
     outFilePtr->Close();
     return 0;

@@ -19,7 +19,7 @@ public:
     GetLogMessage();
 
     std::string
-    GetVerboseError();
+    GetVerboseError() const;
 
 private:
     std::string m_debugMsg;

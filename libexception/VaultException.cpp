@@ -19,7 +19,7 @@ VaultException::GetLogMessage()
 }
 
 std::string
-VaultException::GetVerboseError()
+VaultException::GetVerboseError() const
 {
     std::stringstream ss;
     ss << "[ " << m_fileName << " ]" << m_logMsg << " . " << m_debugMsg;

@@ -20,7 +20,7 @@ namespace svsecurity
         if ( keyLen != (alg.GetKeySize() >> 3) + 1) /* adding 1 for NULL byte */
         {
             std::stringstream ss;
-            ss << "Error in InitMac, invalid key size. Expected key of size " << (alg.GetKeySize() >> 3) 
+            ss << "Error in InitMac, invalid key size. Expected key of size " << (alg.GetKeySize() >> 3) + 1 
             << " bytes, got " << keyLen << " bytes";
             throw VaultException("HmacProvider.cpp", "Cryptographic Exception", ss.str().c_str());
         }
@@ -40,6 +40,12 @@ namespace svsecurity
         uint32_t payloadSize
         )
     { 
+        if ( payload.size() == 0 || payloadSize > payload.size() )
+        {
+            std::stringstream ss;
+            ss  << "error in HmacProvider::UpdateMac payload's requested size " << payloadSize << " is invalid.";
+            throw VaultException("HmacProvider.cpp", "InputRangeException", ss.str().c_str());
+        }
         if ( !HMAC_Update(&m_ctx, payload.data(), payloadSize) )
         {
             std::stringstream ss;
@@ -75,14 +81,17 @@ namespace svsecurity
     {
 
         std::vector<unsigned char>::const_iterator eIt = expMac.begin(), rIt = realMac.begin();
-        uint32_t result = (expMac.size() ^ realMac.size());
-
+        uint32_t eSize = expMac.size();
+        uint32_t rSize = realMac.size();
+        uint32_t result = eSize ^ rSize;
+        const unsigned char *pExpMac = expMac.data(), *pRealMac = realMac.data();
+        
         /* No early exit, to prevent side-channels */
-        while(eIt != expMac.end() && rIt != realMac.end()) 
+        for (uint32_t i = 0, j = 0; i < eSize && j < rSize; ++i, ++j) 
         {
-            result |= (*eIt ^ *rIt) & 0xFF; /* avoid branching */
-            ++eIt;
-            ++rIt;
+            result |= (uint32_t)((uint32_t)*pExpMac ^ (uint32_t)*pRealMac); /* avoid branching */
+            ++pExpMac;
+            ++pRealMac;
         }
         return (result == 0);
     }
