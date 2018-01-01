@@ -12,13 +12,11 @@ namespace svsecurity
         {
             case Algorithm::MacType::HMAC_SHA_256:
                 m_keySize = 256;
-                break;
-            case Algorithm::MacType::HMAC_SHA_512:
-                m_keySize = 512;
+                m_hash = EVP_sha256();
                 break;
             default:
-                const char* msg = "Unrecognized cryptographic MAC algorithm type specified";
-                throw VaultException("CryptoAlgorithms.cpp", msg, msg);
+                m_keySize = 512;
+                m_hash = EVP_sha512();
                 break;
         }
     }
@@ -27,6 +25,12 @@ namespace svsecurity
     MacAlgorithm::GetKeySize() const
     {
         return m_keySize;
+    }
+
+    const EVP_MD*
+    MacAlgorithm::GetHashMethod() const
+    {
+        return m_hash;
     }
 
     EncryptionAlgorithm::EncryptionAlgorithm(

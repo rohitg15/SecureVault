@@ -28,16 +28,17 @@ namespace svsecurity
         std::vector<unsigned char>
         GetFinalMac() override;
 
-        virtual
+        static
         bool
         VerifyMac(
             const std::vector<unsigned char>& expMac,
             const std::vector<unsigned char>& realMac
-        ) override;
+        );
         
     private:
         static const uint32_t HMAC_SHA256_KEY_LEN_BYTES = 32;
         HMAC_CTX m_ctx;
+        const EVP_MD* m_hash;
         uint32_t m_hashLenBytes;
     };
 

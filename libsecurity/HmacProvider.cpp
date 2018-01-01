@@ -8,7 +8,9 @@ namespace svsecurity
 {
     
     HmacProvider::HmacProvider()
-    : m_hashLenBytes(0) {}
+    : m_hashLenBytes(0),
+      m_hash(NULL)
+    {}
 
     void
     HmacProvider::InitMac(
@@ -17,6 +19,7 @@ namespace svsecurity
         )
     {
         uint32_t keyLen = key.size();
+        m_hash = alg.GetHashMethod();
         if ( keyLen != (alg.GetKeySize() >> 3) + 1) /* adding 1 for NULL byte */
         {
             std::stringstream ss;
@@ -25,8 +28,9 @@ namespace svsecurity
             throw VaultException("HmacProvider.cpp", "Cryptographic Exception", ss.str().c_str());
         }
         m_hashLenBytes = keyLen;
+
         HMAC_CTX_init(&m_ctx);
-        if ( !HMAC_Init_ex(&m_ctx, key.data(), keyLen, EVP_sha256(), NULL) )
+        if ( !HMAC_Init_ex(&m_ctx, key.data(), keyLen, m_hash, NULL) )
         {
             std::stringstream ss;
             ss << "error in HMAC_Init_ex, key size = " << keyLen << std::endl; 
@@ -79,26 +83,21 @@ namespace svsecurity
         const std::vector<unsigned char>& realMac
         )
     {
-
-        std::vector<unsigned char>::const_iterator eIt = expMac.begin(), rIt = realMac.begin();
         uint32_t eSize = expMac.size();
         uint32_t rSize = realMac.size();
-        uint32_t result = eSize ^ rSize;
-        const unsigned char *pExpMac = expMac.data(), *pRealMac = realMac.data();
+        uint32_t result = (uint32_t)(eSize ^ rSize);
         
         /* No early exit, to prevent side-channels */
-        for (uint32_t i = 0, j = 0; i < eSize && j < rSize; ++i, ++j) 
+        for (uint32_t i = 0, j = 0; (i < eSize) && (j < rSize); ++i, ++j) 
         {
-            result |= (uint32_t)((uint32_t)*pExpMac ^ (uint32_t)*pRealMac); /* avoid branching */
-            ++pExpMac;
-            ++pRealMac;
+            result |= (uint32_t)(expMac[i] ^ realMac[j]);
         }
         return (result == 0);
     }
 
     HmacProvider::~HmacProvider()
     {
-        HMAC_CTX_cleanup(&m_ctx);
+       HMAC_CTX_cleanup(&m_ctx); 
     }
 
 } // namespace svsecurity

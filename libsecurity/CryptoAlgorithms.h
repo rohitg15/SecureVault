@@ -35,8 +35,12 @@ namespace svsecurity
         uint32_t
         GetKeySize() const;
 
+        const EVP_MD*
+        GetHashMethod() const;
+
     private:
         uint32_t m_keySize;
+        const EVP_MD* m_hash;
     };
 
     class EncryptionAlgorithm

@@ -34,12 +34,12 @@ namespace svsecurity
         std::vector<unsigned char>
         GetFinalMac() = 0; 
 
-        virtual
-        bool
-        VerifyMac(
-            const std::vector<unsigned char>& expMac,
-            const std::vector<unsigned char>& realMac
-            ) = 0;
+        // virtual
+        // bool
+        // VerifyMac(
+        //     const std::vector<unsigned char>& expMac,
+        //     const std::vector<unsigned char>& realMac
+        //     ) = 0;
     };
 
 } //  namespace svsecurity
